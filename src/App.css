@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .App {
   text-align: center;
 }
@@ -12,7 +13,6 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -36,8 +36,6 @@
     transform: rotate(360deg);
   }
 }
-
-
 .swiper {
   width: 100%;
   height: clamp(200px, 17.36vw, 250px); /* Adaptive height */
@@ -57,13 +55,12 @@
   box-shadow: none;
   top: 60%;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-
-  &::after {
-    font-size: clamp(1rem, 1.04vw, 1.5rem); /* Adaptive font size */
-  }
-  &:hover {
-    background-color: rgba(66, 86, 122, 0.1); /* Легкий фон при наведении */
-  }
+}
+.swiper-button-prev::after, .swiper-button-next::after {
+  font-size: clamp(1rem, 1.04vw, 1.5rem); /* Adaptive font size */
+}
+.swiper-button-prev:hover, .swiper-button-next:hover {
+  background-color: rgba(66, 86, 122, 0.1); /* Легкий фон при наведении */
 }
 
 .swiper-button-prev {
@@ -90,3 +87,5 @@
   width: clamp(8px, 0.69vw, 10px); /* Сохраняем размер */
   height: clamp(8px, 0.69vw, 10px); /* Сохраняем размер */
 }
+
+/*# sourceMappingURL=App.css.map */
