@@ -1,15 +1,16 @@
-interface DatePeriod {
+
+export interface Event {
+    year: string;
+    description: string;
+}
+
+export interface HistoricalDate {
     range: string;
     category: string;
     events: Event[];
 }
 
-interface Event {
-    year: string;
-    description: string;
-}
-
-export const historicalDates: DatePeriod[] = [
+export const historicalDates: HistoricalDate[] = [
     {
         range: "1980 1986",
         category: "Технологии",
