@@ -1,91 +1,65 @@
 @charset "UTF-8";
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 .swiper {
   width: 100%;
   height: clamp(200px, 17.36vw, 250px); /* Adaptive height */
 }
 
-/* Стили для навигации Swiper */
 .swiper-button-prev, .swiper-button-next {
   color: #42567A; /* Цвет стрелок навигации слайдера */
-  width: clamp(30px, 2.77vw, 40px); /* Adaptive width */
-  height: clamp(30px, 2.77vw, 40px); /* Adaptive height */
-  background-color: transparent; /* Прозрачный фон */
-  border: 1px solid #42567A; /* Тонкая рамка */
+  width: 40px !important;
+  height: 40px !important;
+  background-color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: none;
   top: 60%;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  box-shadow: 0 0 15px 0 rgba(56, 119, 238, 0.1);
 }
 .swiper-button-prev::after, .swiper-button-next::after {
-  font-size: clamp(1rem, 1.04vw, 1.5rem); /* Adaptive font size */
+  font-size: 15px !important;
 }
 .swiper-button-prev:hover, .swiper-button-next:hover {
-  background-color: rgba(66, 86, 122, 0.1); /* Легкий фон при наведении */
-}
-
-.swiper-button-prev {
-  left: clamp(5px, 0.69vw, 10px); /* Adaptive left */
-}
-
-.swiper-button-next {
-  right: clamp(5px, 0.69vw, 10px); /* Adaptive right */
+  box-shadow: 0 0 15px 0 rgba(56, 119, 238, 0.2);
 }
 
 .swiper-pagination {
-  bottom: clamp(5px, 0.69vw, 10px); /* Adaptive bottom */
+  opacity: 0;
+}
+@media (max-width: 768px) {
+  .swiper-pagination {
+    opacity: 1;
+    bottom: clamp(5px, 0.69vw, 10px);
+  }
 }
 
 .swiper-pagination-bullet {
   background: #E6E6E6; /* Цвет неактивных точек пагинации */
   opacity: 1;
-  width: clamp(8px, 0.69vw, 10px); /* Adaptive size */
-  height: clamp(8px, 0.69vw, 10px); /* Adaptive size */
+  width: 10px;
+  height: auto;
 }
 
 .swiper-pagination-bullet-active {
-  background: #5236FF; /* Цвет активной точки пагинации */
-  width: clamp(8px, 0.69vw, 10px); /* Сохраняем размер */
-  height: clamp(8px, 0.69vw, 10px); /* Сохраняем размер */
+  background: #5236FF;
+  width: 10px;
+  height: auto;
+}
+
+.swiper-wrapper {
+  margin-top: 40px;
+  margin-left: 60px;
+  margin-right: 60px;
+}
+
+.swiper-slide p {
+  max-width: 80%;
+}
+@media (max-width: 768px) {
+  .swiper-slide p {
+    max-width: 90%;
+  }
 }
 
 /*# sourceMappingURL=App.css.map */

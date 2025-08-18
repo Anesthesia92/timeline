@@ -18,10 +18,11 @@ const NavButton = styled.button`
     background: transparent;
     border: 1px solid #42567A;
     border-radius: 50%;
-    width: clamp(40px, 3.47vw, 50px);
-    height: clamp(40px, 3.47vw, 50px);
+    width: 44px;
+    height: 44px;
     display: inline-block;
-    font-size: clamp(1.5rem, 1.38vw, 2rem);
+    font-size: 1rem;
+    font-weight: bold;
     color: #42567A;
     cursor: pointer;
     box-shadow: none;
@@ -45,8 +46,7 @@ const NavButton = styled.button`
     }
 `;
 
-export const SwiperNavButtons = ({ activeIndex, total, onPrev, onNext }: any) => {
-    // Определяем, является ли текущий индекс первым или последним
+export const SwiperNavButtons = ({ activeIndex, total, onPrev, onNext }: PaginationProps) => {
     const isBeginning = activeIndex === 0;
     const isEnd = activeIndex === total - 1;
 

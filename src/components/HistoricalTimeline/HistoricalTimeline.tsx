@@ -1,6 +1,6 @@
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import styled, {css} from 'styled-components';
-import {Swiper, SwiperSlide, useSwiper} from 'swiper/react';
+import {Swiper, SwiperSlide} from 'swiper/react';
 import {Navigation, Pagination} from 'swiper/modules';
 import {useGSAP} from '@gsap/react';
 import gsap from 'gsap';
@@ -9,9 +9,9 @@ import {Swiper as SwiperCore} from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+
 import {historicalDates} from "../data";
 import {SwiperNavButtons} from "../ SwiperNavButtons";
-
 
 const TimelineContainer = styled.div`
     font-family: 'Inter', sans-serif;
@@ -39,7 +39,6 @@ const TimelineSection = styled.div`
     align-items: flex-start;
     width: 100%;
     position: relative;
-    margin-bottom: 40px;
     padding: 170px 0 0;
     border-radius: 20px;
     overflow: hidden;
@@ -152,45 +151,9 @@ const NavigationButtons = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: clamp(10px, 1.04vw, 15px);
-    margin-top: clamp(15px, 1.38vw, 20px);
-    position: absolute;
-    bottom: clamp(15px, 1.38vw, 20px);
-`;
-
-const NavButtonGap = styled.div`
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-`;
-
-const NavButton = styled.button`
-    background: transparent;
-    border: 1px solid #42567A;
-    border-radius: 50%;
-    width: clamp(40px, 3.47vw, 50px);
-    height: clamp(40px, 3.47vw, 50px);
-    display: inline-block;
-    font-size: clamp(1.5rem, 1.38vw, 2rem);
-    color: #42567A;
-    cursor: pointer;
-    box-shadow: none;
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-    outline: none;
-
-    &:hover {
-        background-color: rgba(66, 86, 122, 0.1);
-    }
-
-    &:active {
-        background-color: rgba(66, 86, 122, 0.2);
-        transform: translateY(0);
-    }
-
-    &:disabled {
-        color: #ccc;
-        cursor: not-allowed;
-        border-color: #ccc;
-        background-color: transparent;
+    padding-left: 80px;
+    @media (max-width: 768px) {
+        padding: 0;
     }
 `;
 
@@ -248,19 +211,19 @@ const DotWrapper = styled.div<{ x: number; y: number }>`
     transition: all 0.3s ease;
 `;
 
-const CircleDotDiv = styled.div<{ isActive: boolean }>`
+const CircleDotDiv = styled.div<{ isActive: boolean, isHovered: boolean }>`
     width: 100%;
     height: 100%;
     border-radius: 50%;
     background-color: #42567A;
 
-    &:hover, &:focus {
+    ${({isActive, isHovered}) => !isActive && isHovered && css`
         width: 56px;
         height: 56px;
-        border: 1px solid rgba(48, 62, 88, 0.75);
         background-color: #F4F5F9;
+        border: 1px solid rgba(48, 62, 88, 0.75);
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+    `}
 
     ${({isActive}) =>
             isActive &&
@@ -274,19 +237,13 @@ const CircleDotDiv = styled.div<{ isActive: boolean }>`
 `;
 
 const ActiveDotContent = styled.div`
-    position: sticky;
-    top: 50%;
-    left: 50%;
+    width: 56px;
+    height: 56px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 2;
     pointer-events: none;
-    width: inherit;
-    height: 100%;
 `;
-
 
 const ActiveIndexDisplay = styled.span`
     font-size: 20px;
@@ -304,25 +261,25 @@ const ActiveCategoryDisplay = styled.div`
     top: 50%;
     left: 100%;
     transform: translateY(-50%);
-    margin-left: 20px;
+    margin-left: 40px;
 `;
 
 const SliderSection = styled.div`
     width: 100%;
     max-width: 100%;
-    margin-top: clamp(15px, 1.38vw, 20px);
     padding: clamp(15px, 1.38vw, 20px);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     opacity: 1;
-    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 `;
 
 const EventCard = styled.div`
-    background: #f8f9fa;
+    background: transparent;
     border-radius: 15px;
-    padding: clamp(15px, 1.38vw, 20px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    padding-left: clamp(15px, 1.38vw, 20px);
+    padding-right: clamp(15px, 1.38vw, 20px);
     min-height: clamp(120px, 10.41vw, 150px);
     display: flex;
     flex-direction: column;
@@ -332,12 +289,13 @@ const EventCard = styled.div`
     transition: transform 0.2s ease;
 
     &:hover {
-        transform: translateY(-5px);
+        background: #f8f9fa;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
     h3 {
-        font-size: clamp(1.4rem, 1.25vw, 1.8rem);
-        color: #5236FF;
+        font-size: clamp(1rem, 1.25vw, 1.2rem);
+        color: #3877EE;
         margin-bottom: clamp(5px, 0.69vw, 10px);
         font-weight: 700;
     }
@@ -351,27 +309,25 @@ const EventCard = styled.div`
 
 const HistoricalTimeline: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const swiperRef = useRef<SwiperCore | null>(null); // Использование useRef
+    const swiperRef = useRef<SwiperCore | null>(null);
     const currentData = historicalDates[activeIndex];
-
     const [startYear, endYear] = currentData.range.split(' ');
-    const [swiper, setSwiper] = useState<SwiperCore | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const yearRefs = useRef<Array<HTMLSpanElement | null>>([]);
     const sliderRef = useRef<HTMLDivElement | null>(null);
 
+    const [activeIndexSlide, setActiveIndexSlide] = useState(0);
 
     const getDotPosition = useCallback((index: number, total: number) => {
-        const containerSize = 530;
-        const radius = 265;
+        const containerSize = 534;
+        const radius = 266;
         const centerX = containerSize / 2;
         const centerY = containerSize / 2;
 
         const angle = 90 - (index / total) * 360;
-
         const radians = (angle * Math.PI) / 180;
-
         const x = centerX + radius * Math.cos(radians);
         const y = centerY - radius * Math.sin(radians);
 
@@ -390,7 +346,6 @@ const HistoricalTimeline: React.FC = () => {
         );
     }, {scope: containerRef, dependencies: [activeIndex]});
 
-
     const handlePrevClick = () => {
         if (activeIndex > 0) {
             setActiveIndex(activeIndex - 1);
@@ -399,13 +354,19 @@ const HistoricalTimeline: React.FC = () => {
 
     const handleNextClick = () => {
         if (activeIndex < historicalDates.length - 1) {
-            setActiveIndex(activeIndex + 1);
+            setActiveIndex(activeIndex + 1)
+            console.log(activeIndex, historicalDates.length - 1);
         }
     };
 
     const handleDotClick = (index: number) => {
         setActiveIndex(index);
-    }
+    };
+
+    const handleSlideChange = (swiper:any ) => {
+        console.log('Slide changed to:', swiper.activeIndex);
+        setActiveIndexSlide(4);
+    };
 
     return (
         <TimelineContainer ref={containerRef}>
@@ -414,17 +375,6 @@ const HistoricalTimeline: React.FC = () => {
                     <Gradient></Gradient>
                     <Title>Исторические даты</Title>
                 </Header>
-
-                <NavigationButtons>
-                    <CurrentIndexDisplay>
-                        {String(activeIndex + 1).padStart(2, '0')}/
-                        {String(historicalDates.length).padStart(2, '0')}
-                    </CurrentIndexDisplay>
-                    <SwiperNavButtons    activeIndex={activeIndex}
-                                         total={ historicalDates.length}
-                                         onNext={handleNextClick}
-                                         onPrev={handlePrevClick} />
-                </NavigationButtons>
 
                 <VerticalLineBackground/>
                 <HorizontalLineBackground/>
@@ -446,22 +396,30 @@ const HistoricalTimeline: React.FC = () => {
                     <BackgroundCircle/>
                     {historicalDates.map((item, index) => {
                         const {x: dotX, y: dotY} = getDotPosition(index, historicalDates.length);
+                        const isHovered = index === hoveredIndex;
+                        const isActive = index === activeIndex;
+
                         return (
                             <DotWrapper
                                 key={index}
                                 x={dotX}
                                 y={dotY}
                                 onClick={() => handleDotClick(index)}
+                                onMouseEnter={() => setHoveredIndex(index)}
+                                onMouseLeave={() => setHoveredIndex(null)}
                             >
-                                <CircleDotDiv isActive={index === activeIndex}>
-                                    {index === activeIndex && (
+                                <CircleDotDiv isActive={isActive} isHovered={isHovered}>
+                                    {(isActive || isHovered) && (
                                         <ActiveDotContent>
                                             <ActiveIndexDisplay>
-                                                <span>{activeIndex + 1}</span>
+                                                {index + 1}
                                             </ActiveIndexDisplay>
-                                            <ActiveCategoryDisplay>
-                                                {item.category}
-                                            </ActiveCategoryDisplay>
+
+                                            {isActive && (
+                                                <ActiveCategoryDisplay>
+                                                    {item.category}
+                                                </ActiveCategoryDisplay>
+                                            )}
                                         </ActiveDotContent>
                                     )}
                                 </CircleDotDiv>
@@ -472,18 +430,29 @@ const HistoricalTimeline: React.FC = () => {
             </TimelineSection>
 
             <SliderSection ref={sliderRef}>
+                <VerticalLineBackground/>
+                <NavigationButtons>
+                    <CurrentIndexDisplay>
+                        {String(activeIndex + 1).padStart(2, '0')}/
+                        {String(historicalDates.length).padStart(2, '0')}
+                    </CurrentIndexDisplay>
+                    <SwiperNavButtons activeIndex={activeIndex}
+                                      total={historicalDates.length}
+                                      onNext={handleNextClick}
+                                      onPrev={handlePrevClick}/>
+                </NavigationButtons>
                 <Swiper
                     modules={[Navigation, Pagination]}
                     spaceBetween={30}
-                    slidesPerView={1}
+                    slidesPerView={3}
                     navigation
+                    onSlideChange={handleSlideChange}
                     pagination={{clickable: true}}
-                    onSwiper={(swiper) => setSwiper(swiper)}
-                    onSlideChange={(s) => setActiveIndex(s.activeIndex)}
+                    onSwiper={(swiper) => console.log(swiper)}
                     breakpoints={{
-                        640: { slidesPerView: 2, spaceBetween: 20, },
-                        768: { slidesPerView: 3, spaceBetween: 30, },
-                        1024: { slidesPerView: 4, spaceBetween: 40, },
+                        450: {slidesPerView: 1, spaceBetween: 20,},
+                        768: {slidesPerView: 3, spaceBetween: 30,},
+                        1024: {slidesPerView: 3, spaceBetween: 30,},
                     }}
                 >
                     {currentData.events.map((event, index) => (
